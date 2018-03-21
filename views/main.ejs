@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Desktop</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <style media="screen">
+      body, html {
+        height: 100%;
+      }
+      .bg {
+        height: 100%;
+        background-image: url("<%=source%>");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    </style>
+    <script type="text/javascript">
+      $(function (){
+        var socket = io();
+        $(document).mousedown(function(coords) {
+          switch (coords.which) {
+            case 1:
+                socket.emit('mouse', "ldown " + coords.clientX + " " + coords.clientY);
+                break;
+              case 3:
+                socket.emit('mouse', "rdown " + coords.clientX + " " + coords.clientY);
+                break;
+            }
+        });
+        $(document).mouseup(function(coords) {
+          switch (coords.which) {
+            case 1:
+                socket.emit('mouse', "lup " + coords.clientX + " " + coords.clientY);
+                break;
+              case 3:
+                socket.emit('mouse', "rup " + coords.clientX + " " + coords.clientY);
+                break;
+            }
+        });
+        /*document.addEventListener('click', function (coords) {
+          socket.emit('mouse', "lclick " + coords.clientX + " " + coords.clientY);
+        });*/
+        document.addEventListener('contextmenu', function (coords) {
+          //socket.emit('mouse', "rclick " + coords.clientX + " " + coords.clientY);
+          coords.preventDefault();
+        }, false);
+        socket.on('img', function (msg) {
+          $('body').css('background-image', 'url('+msg+')');
+        });
+      });
+    </script>
+  </head>
+  <body class="bg">
+
+  </body>
+</html>
